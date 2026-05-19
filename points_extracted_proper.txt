@@ -1,0 +1,63 @@
+=== Input (21) ===
+BldgPress | Building Pressure
+BldgPressPid | Building Pressure PID
+EconMode | Economizer Mode
+FltrDiffPress | Filter Differential Pressure
+FrzstatAlrm | Freezestat Alarm
+MATemp | Mixed Air Temperature
+OAEnth | Outside Air Enthalpy
+OAHum | Outside Air Humidity
+OATemp | Outside Air Temperature
+OccSts | Occupancy Status
+RACO2 | Return Air CO2
+RASmkAlrm | Return Air Smoke Alarm
+RATemp | Return Air Temperature
+SADuctPress | Supply Air Duct Pressure 
+SADuctPressPID | Supply Duct Static Pressure PID
+SATemp | Supply Air Temperature
+SATempClgPID | Supply Air Temperature Cooling PID
+SFFailAlrm | 
+SFHandAlrm | 
+SFHiStatAlrm | Supply Fan High Static Alarm
+SFSts | Supply Fan Status
+
+=== Output (13) ===
+AftrHrsCmd | After Hours Command
+CHWVlv | Chilled Water Valve Command
+CooldownCmd | Cooldown Command
+EffDmprEnbl | Effective Damper Enable
+EffSysEnbl | Effective System Enable
+OADmpr | Outside Air Damper Command
+OccCmd | Occupied Command
+RADmpr | Return Air Damper Command
+RlfDmpr | Relief Air Damper Command
+SFCmd | Supply Fan Command
+SFSpd | Supply Fan Speed Signal
+UnitShtdwnCmd | Unit Shutdown Command
+WarmupCmd | Warmup Command
+
+=== Setpoint (23) ===
+BldgPressPidKi | Integral Constant
+BldgPressPidKp | Proportional Constant
+BldgPressStpt | Room Pressure Setpoint
+EconEnblOAEnthStpt | Outside Air Enthalpy Setpoint for Economizer Operation
+EconEnblOATempStpt | Econ mode Enable OA Temperature Setpoint
+EconMATemploLimPidKp | Proportional Constant
+EconMATempLow LimitPidKi | Integral Constant
+EconMATLowLimitPid | Mixed Air Temperature Low Limit Contrl PID for Economizer Operation
+MATempLoLimStpt | Mixed Air Temperature Low Limit Setpoint
+NHLCmd | Night High Limit Command
+NHLEnblOATempStpt | NHL Enable OA Temperature Setpoint
+NLLCmd | Night Low Limit Command
+OADmprMinPosStpt | Outside AIr Minimum Position Setpoint
+RlfDmprDisblOATempStpt | Relief damper Disable OA Temperature Setpoint
+SADuctPressPIDKi | Integral Constant
+SADuctPressPIDKp | Proportional Constant
+SADuctPressStpt | Supply Air Duct Static Pressure Setpoint
+SATempClgPIDKi | Integral Constant for Supply Temperature Cooling PID
+SATempClgPIDKp | Proportional Constant for Supply Temperature Cooling PID
+SATempStpt | Supply Air Duct Temperature Setpoint
+SFAlrmDly | Supply Fan Alarm Delay
+SFMinSpdStpt | Supply Fan Minimum Speed Setpoint
+SFOffDly | Supply Fan Off Delay
+

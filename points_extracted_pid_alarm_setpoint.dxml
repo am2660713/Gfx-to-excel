@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<DXML version="1.0" source="AHU(ECY_600).gfx">
+  <Points>
+    <Point name="BldgPress" index="111" pointType="HardwareInput" category="Input">
+      <Description>Building Pressure</Description>
+    </Point>
+    <Point name="EconMode" index="12" pointType="BinaryValue" category="Input">
+      <Description>Economizer Mode</Description>
+    </Point>
+    <Point name="FltrDiffPress" index="105" pointType="HardwareInput" category="Input">
+      <Description>Filter Differential Pressure</Description>
+    </Point>
+    <Point name="MATemp" index="102" pointType="HardwareInput" category="Input">
+      <Description>Mixed Air Temperature</Description>
+    </Point>
+    <Point name="OAEnth" index="12" pointType="AnalogValue" category="Input">
+      <Description>Outside Air Enthalpy</Description>
+    </Point>
+    <Point name="OAHum" index="2" pointType="AnalogValue" category="Input">
+      <Description>Outside Air Humidity</Description>
+    </Point>
+    <Point name="OATemp" index="1" pointType="AnalogValue" category="Input">
+      <Description>Outside Air Temperature</Description>
+    </Point>
+    <Point name="OccSts" index="1" pointType="MultiStateValue" category="Input">
+      <Description>Occupancy Status</Description>
+    </Point>
+    <Point name="RACO2" index="104" pointType="HardwareInput" category="Input">
+      <Description>Return Air CO2</Description>
+    </Point>
+    <Point name="RATemp" index="103" pointType="HardwareInput" category="Input">
+      <Description>Return Air Temperature</Description>
+    </Point>
+    <Point name="SADuctPress" index="106" pointType="HardwareInput" category="Input">
+      <Description>Supply Air Duct Pressure </Description>
+    </Point>
+    <Point name="SATemp" index="101" pointType="HardwareInput" category="Input">
+      <Description>Supply Air Temperature</Description>
+    </Point>
+    <Point name="SFSts" index="107" pointType="HardwareInput" category="Input">
+      <Description>Supply Fan Status</Description>
+    </Point>
+    <Point name="AftrHrsCmd" index="8" pointType="BinaryValue" category="Output">
+      <Description>After Hours Command</Description>
+    </Point>
+    <Point name="CHWVlv" index="106" pointType="HardwareOutput" category="Output">
+      <Description>Chilled Water Valve Command</Description>
+    </Point>
+    <Point name="CooldownCmd" index="5" pointType="BinaryValue" category="Output">
+      <Description>Cooldown Command</Description>
+    </Point>
+    <Point name="EffDmprEnbl" index="9" pointType="BinaryValue" category="Output">
+      <Description>Effective Damper Enable</Description>
+    </Point>
+    <Point name="EffSysEnbl" index="6" pointType="BinaryValue" category="Output">
+      <Description>Effective System Enable</Description>
+    </Point>
+    <Point name="OADmpr" index="103" pointType="HardwareOutput" category="Output">
+      <Description>Outside Air Damper Command</Description>
+    </Point>
+    <Point name="OccCmd" index="1" pointType="BinaryValue" category="Output">
+      <Description>Occupied Command</Description>
+    </Point>
+    <Point name="RADmpr" index="104" pointType="HardwareOutput" category="Output">
+      <Description>Return Air Damper Command</Description>
+    </Point>
+    <Point name="RlfDmpr" index="105" pointType="HardwareOutput" category="Output">
+      <Description>Relief Air Damper Command</Description>
+    </Point>
+    <Point name="SFCmd" index="101" pointType="HardwareOutput" category="Output">
+      <Description>Supply Fan Command</Description>
+    </Point>
+    <Point name="SFSpd" index="102" pointType="HardwareOutput" category="Output">
+      <Description>Supply Fan Speed Signal</Description>
+    </Point>
+    <Point name="UnitShtdwnCmd" index="7" pointType="BinaryValue" category="Output">
+      <Description>Unit Shutdown Command</Description>
+    </Point>
+    <Point name="WarmupCmd" index="4" pointType="BinaryValue" category="Output">
+      <Description>Warmup Command</Description>
+    </Point>
+    <Point name="BldgPressPid" index="3" pointType="PidLoop" category="Setpoint">
+      <Description>Building Pressure PID</Description>
+    </Point>
+    <Point name="BldgPressPidKi" index="17" pointType="AnalogValue" category="Setpoint">
+      <Description>Integral Constant</Description>
+    </Point>
+    <Point name="BldgPressPidKp" index="16" pointType="AnalogValue" category="Setpoint">
+      <Description>Proportional Constant</Description>
+    </Point>
+    <Point name="BldgPressStpt" index="15" pointType="AnalogValue" category="Setpoint">
+      <Description>Room Pressure Setpoint</Description>
+    </Point>
+    <Point name="EconEnblOAEnthStpt" index="13" pointType="AnalogValue" category="Setpoint">
+      <Description>Outside Air Enthalpy Setpoint for Economizer Operation</Description>
+    </Point>
+    <Point name="EconEnblOATempStpt" index="14" pointType="AnalogValue" category="Setpoint">
+      <Description>Econ mode Enable OA Temperature Setpoint</Description>
+    </Point>
+    <Point name="EconMATemploLimPidKp" index="18" pointType="AnalogValue" category="Setpoint">
+      <Description>Proportional Constant</Description>
+    </Point>
+    <Point name="EconMATempLow LimitPidKi" index="22" pointType="AnalogValue" category="Setpoint">
+      <Description>Integral Constant</Description>
+    </Point>
+    <Point name="EconMATLowLimitPid" index="5" pointType="PidLoop" category="Setpoint">
+      <Description>Mixed Air Temperature Low Limit Contrl PID for Economizer Operation</Description>
+    </Point>
+    <Point name="FrzstatAlrm" index="109" pointType="HardwareInput" category="Setpoint">
+      <Description>Freezestat Alarm</Description>
+    </Point>
+    <Point name="MATempLoLimStpt" index="23" pointType="AnalogValue" category="Setpoint">
+      <Description>Mixed Air Temperature Low Limit Setpoint</Description>
+    </Point>
+    <Point name="NHLCmd" index="2" pointType="BinaryValue" category="Setpoint">
+      <Description>Night High Limit Command</Description>
+    </Point>
+    <Point name="NHLEnblOATempStpt" index="21" pointType="AnalogValue" category="Setpoint">
+      <Description>NHL Enable OA Temperature Setpoint</Description>
+    </Point>
+    <Point name="NLLCmd" index="3" pointType="BinaryValue" category="Setpoint">
+      <Description>Night Low Limit Command</Description>
+    </Point>
+    <Point name="OADmprMinPosStpt" index="19" pointType="AnalogValue" category="Setpoint">
+      <Description>Outside AIr Minimum Position Setpoint</Description>
+    </Point>
+    <Point name="RASmkAlrm" index="110" pointType="HardwareInput" category="Setpoint">
+      <Description>Return Air Smoke Alarm</Description>
+    </Point>
+    <Point name="RlfDmprDisblOATempStpt" index="20" pointType="AnalogValue" category="Setpoint">
+      <Description>Relief damper Disable OA Temperature Setpoint</Description>
+    </Point>
+    <Point name="SADuctPressPID" index="1" pointType="PidLoop" category="Setpoint">
+      <Description>Supply Duct Static Pressure PID</Description>
+    </Point>
+    <Point name="SADuctPressPIDKi" index="5" pointType="AnalogValue" category="Setpoint">
+      <Description>Integral Constant</Description>
+    </Point>
+    <Point name="SADuctPressPIDKp" index="4" pointType="AnalogValue" category="Setpoint">
+      <Description>Proportional Constant</Description>
+    </Point>
+    <Point name="SADuctPressStpt" index="7" pointType="AnalogValue" category="Setpoint">
+      <Description>Supply Air Duct Static Pressure Setpoint</Description>
+    </Point>
+    <Point name="SATempClgPID" index="2" pointType="PidLoop" category="Setpoint">
+      <Description>Supply Air Temperature Cooling PID</Description>
+    </Point>
+    <Point name="SATempClgPIDKi" index="9" pointType="AnalogValue" category="Setpoint">
+      <Description>Integral Constant for Supply Temperature Cooling PID</Description>
+    </Point>
+    <Point name="SATempClgPIDKp" index="8" pointType="AnalogValue" category="Setpoint">
+      <Description>Proportional Constant for Supply Temperature Cooling PID</Description>
+    </Point>
+    <Point name="SATempStpt" index="11" pointType="AnalogValue" category="Setpoint">
+      <Description>Supply Air Duct Temperature Setpoint</Description>
+    </Point>
+    <Point name="SFAlrmDly" index="10" pointType="AnalogValue" category="Setpoint">
+      <Description>Supply Fan Alarm Delay</Description>
+    </Point>
+    <Point name="SFFailAlrm" index="10" pointType="BinaryValue" category="Setpoint">
+      <Description>
+      </Description>
+    </Point>
+    <Point name="SFHandAlrm" index="11" pointType="BinaryValue" category="Setpoint">
+      <Description>
+      </Description>
+    </Point>
+    <Point name="SFHiStatAlrm" index="108" pointType="HardwareInput" category="Setpoint">
+      <Description>Supply Fan High Static Alarm</Description>
+    </Point>
+    <Point name="SFMinSpdStpt" index="6" pointType="AnalogValue" category="Setpoint">
+      <Description>Supply Fan Minimum Speed Setpoint</Description>
+    </Point>
+    <Point name="SFOffDly" index="3" pointType="AnalogValue" category="Setpoint">
+      <Description>Supply Fan Off Delay</Description>
+    </Point>
+  </Points>
+</DXML>

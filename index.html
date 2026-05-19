@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GFX Point Extractor</title>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4efe7;
+      --card: #fff9f0;
+      --ink: #1e2a2f;
+      --muted: #5f6b70;
+      --accent: #0f766e;
+      --accent-2: #f59e0b;
+      --border: #d7c9b6;
+      --ok: #0e9f6e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, #ffe3b8 0, transparent 35%),
+        radial-gradient(circle at 90% 80%, #c2ece2 0, transparent 30%),
+        var(--bg);
+      min-height: 100vh;
+    }
+    .wrap { max-width: 980px; margin: 24px auto; padding: 16px; }
+    .hero {
+      background: linear-gradient(135deg, #fff8ea, #fff2dc);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    h1 { margin: 0 0 6px; font-size: 1.7rem; }
+    p { margin: 0; color: var(--muted); }
+    .grid { display: grid; gap: 16px; margin-top: 16px; }
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .drop {
+      border: 2px dashed #8b9aa0;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      background: #fff;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+    .drop.drag { border-color: var(--accent); background: #f0fffd; }
+    input[type="file"] { display: none; }
+    .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    select, button {
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      background: #fff;
+    }
+    button {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      cursor: pointer;
+    }
+    button.secondary { background: #fff; color: var(--ink); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit,minmax(120px,1fr)); gap: 10px; margin-top: 12px; }
+    .pill {
+      background: #fff;
+      border: 2px solid var(--border);
+      border-radius: 999px;
+      text-align: center;
+      padding: 10px 6px;
+      font-weight: 600;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #e2d6c6; padding: 8px; font-size: 0.92rem; text-align: left; }
+    th { background: #fff0d3; position: sticky; top: 0; }
+    .table-wrap { max-height: 380px; overflow: auto; border-radius: 10px; border: 1px solid #e2d6c6; background: #fff; }
+    .status { margin-top: 8px; font-weight: 600; color: var(--ok); min-height: 20px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Distech .gfx Point Extractor</h1>
+      <p>Upload one <code>.gfx</code> file and get Inputs, Outputs, and Setpoints instantly.</p>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <label class="drop" id="dropZone" for="gfxFile">
+          <strong>Drop .gfx file here</strong><br/>
+          or click to browse
+        </label>
+        <input id="gfxFile" type="file" accept=".gfx,.zip" />
+        <div class="row" style="margin-top:12px;">
+          <label for="mode"><strong>Classification mode:</strong></label>
+          <select id="mode">
+            <option value="default">Default HVAC</option>
+            <option value="pid_alarm_setpoint" selected>PID + Alarm => Setpoint</option>
+            <option value="pid_alarm_input">PID + Alarm => Input</option>
+          </select>
+          <button id="extractBtn" disabled>Extract Points</button>
+          <button class="secondary" id="downloadBtn" disabled>Download CSV</button>
+        </div>
+        <div class="status" id="status"></div>
+        <div class="stats" id="stats"></div>
+      </div>
+
+      <div class="card">
+        <strong>Extracted Points</strong>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Category</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+const fileInput = document.getElementById("gfxFile");
+const dropZone = document.getElementById("dropZone");
+const extractBtn = document.getElementById("extractBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const statusEl = document.getElementById("status");
+const statsEl = document.getElementById("stats");
+const tbody = document.getElementById("tbody");
+const modeEl = document.getElementById("mode");
+
+let selectedFile = null;
+let extractedRows = [];
+
+function setStatus(msg, isError = false) {
+  statusEl.textContent = msg;
+  statusEl.style.color = isError ? "#b91c1c" : "#0e9f6e";
+}
+
+function classifyPoint(name, desc, type, mode) {
+  const t = (type || "").toLowerCase();
+
+  if (t === "hardwareinput") return "Input";
+  if (t === "hardwareoutput") return "Output";
+  if (t === "analogvalue" || t === "binaryvalue") return "Setpoint";
+
+  return "Setpoint";
+}
+
+function render(rows) {
+  tbody.innerHTML = "";
+  const counts = { Input: 0, Output: 0, Setpoint: 0 };
+
+  rows.forEach((r, i) => {
+    counts[r.category] = (counts[r.category] || 0) + 1;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td>${r.name}</td>
+      <td>${r.description}</td>
+      <td>${r.type}</td>
+      <td>${r.category}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  statsEl.innerHTML = `
+    <div class="pill">Total: ${rows.length}</div>
+    <div class="pill">Input: ${counts.Input || 0}</div>
+    <div class="pill">Output: ${counts.Output || 0}</div>
+    <div class="pill">Setpoint: ${counts.Setpoint || 0}</div>
+  `;
+}
+
+function toCSV(rows) {
+  const header = ["Index", "Name", "Description", "PointType", "Category"];
+  const esc = (v) => {
+    const s = String(v ?? "");
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  const lines = rows.map(r => [r.index, r.name, r.description, r.type, r.category].map(esc).join(","));
+  return [header.join(","), ...lines].join("\n");
+}
+
+async function extractPoints(file) {
+  setStatus("Reading file...");
+  const buffer = await file.arrayBuffer();
+  const zip = await JSZip.loadAsync(buffer);
+
+  const xmlEntry = zip.file("Info/InternalPoints.xml") || zip.file("Info\\InternalPoints.xml");
+  if (!xmlEntry) throw new Error("InternalPoints.xml not found in .gfx file");
+
+  const xmlText = await xmlEntry.async("text");
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xmlText, "application/xml");
+
+  if (doc.querySelector("parsererror")) throw new Error("Invalid XML format in InternalPoints.xml");
+
+  const points = [...doc.querySelectorAll("Point")].map(p => {
+    const name = p.querySelector("Name")?.textContent?.trim() || "";
+    const description = p.querySelector("Description")?.textContent?.trim() || "";
+    const type = p.getAttribute("type") || "";
+    const index = Number(p.querySelector("Index")?.textContent?.trim() || 0);
+    return { name, description, type, index };
+  });
+
+  const mode = modeEl.value;
+  return points
+    .map(p => ({ ...p, category: classifyPoint(p.name, p.description, p.type, mode) }))
+    .sort((a, b) => a.index - b.index);
+}
+
+fileInput.addEventListener("change", () => {
+  selectedFile = fileInput.files?.[0] || null;
+  extractBtn.disabled = !selectedFile;
+  downloadBtn.disabled = true;
+  if (selectedFile) setStatus(`Selected: ${selectedFile.name}`);
+});
+
+["dragenter", "dragover"].forEach(evt => {
+  dropZone.addEventListener(evt, (e) => {
+    e.preventDefault();
+    dropZone.classList.add("drag");
+  });
+});
+["dragleave", "drop"].forEach(evt => {
+  dropZone.addEventListener(evt, (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("drag");
+  });
+});
+dropZone.addEventListener("drop", (e) => {
+  const f = e.dataTransfer.files?.[0];
+  if (!f) return;
+  selectedFile = f;
+  extractBtn.disabled = false;
+  downloadBtn.disabled = true;
+  setStatus(`Selected: ${f.name}`);
+});
+
+extractBtn.addEventListener("click", async () => {
+  if (!selectedFile) return;
+  try {
+    extractedRows = await extractPoints(selectedFile);
+    render(extractedRows);
+    setStatus(`Extracted ${extractedRows.length} points successfully.`);
+    downloadBtn.disabled = extractedRows.length === 0;
+  } catch (err) {
+    setStatus(err.message || "Extraction failed.", true);
+  }
+});
+
+downloadBtn.addEventListener("click", () => {
+  if (!extractedRows.length) return;
+  const csv = toCSV(extractedRows);
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${(selectedFile?.name || "gfx").replace(/\.[^.]+$/, "")}_points.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
