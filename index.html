@@ -85,6 +85,16 @@
     th { background: #fff0d3; position: sticky; top: 0; }
     .table-wrap { max-height: 380px; overflow: auto; border-radius: 10px; border: 1px solid #e2d6c6; background: #fff; }
     .status { margin-top: 8px; font-weight: 600; color: var(--ok); min-height: 20px; }
+    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .mini-box {
+      background: #fff;
+      border: 1px solid #e2d6c6;
+      border-radius: 10px;
+      padding: 10px;
+      min-height: 70px;
+    }
+    .mini-box strong { display: block; margin-bottom: 6px; }
+    .mini-list { font-size: 0.9rem; color: #334155; word-break: break-word; }
   </style>
 </head>
 <body>
@@ -113,6 +123,16 @@
         </div>
         <div class="status" id="status"></div>
         <div class="stats" id="stats"></div>
+        <div class="mini-grid">
+          <div class="mini-box">
+            <strong>BinaryValue Numbers</strong>
+            <div class="mini-list" id="binaryNos">-</div>
+          </div>
+          <div class="mini-box">
+            <strong>Setpoint Numbers</strong>
+            <div class="mini-list" id="setpointNos">-</div>
+          </div>
+        </div>
       </div>
 
       <div class="card">
@@ -144,6 +164,8 @@ const statusEl = document.getElementById("status");
 const statsEl = document.getElementById("stats");
 const tbody = document.getElementById("tbody");
 const modeEl = document.getElementById("mode");
+const binaryNosEl = document.getElementById("binaryNos");
+const setpointNosEl = document.getElementById("setpointNos");
 
 let selectedFile = null;
 let extractedRows = [];
@@ -186,6 +208,16 @@ function render(rows) {
     <div class="pill">Output: ${counts.Output || 0}</div>
     <div class="pill">Setpoint: ${counts.Setpoint || 0}</div>
   `;
+
+  const binaryNos = rows
+    .filter(r => (r.type || "").toLowerCase() === "binaryvalue")
+    .map(r => `${r.index} (${r.name})`);
+  binaryNosEl.textContent = binaryNos.length ? binaryNos.join(", ") : "-";
+
+  const setpointNos = rows
+    .filter(r => r.category === "Setpoint")
+    .map(r => `${r.index} (${r.name})`);
+  setpointNosEl.textContent = setpointNos.length ? setpointNos.join(", ") : "-";
 }
 
 function toCSV(rows) {
