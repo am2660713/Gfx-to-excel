@@ -122,6 +122,7 @@
             <thead>
               <tr>
                 <th>Point No</th>
+                <th>Code</th>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Type</th>
@@ -163,6 +164,27 @@ function classifyPoint(name, desc, type, mode) {
   return "Setpoint";
 }
 
+function buildShortCode(name, desc, type, index) {
+  const t = (type || "").toLowerCase();
+  const s = `${name} ${desc}`.toLowerCase();
+
+  if (t === "analogvalue") return `AV${index}`;
+  if (t === "binaryvalue") return `BV${index}`;
+
+  if (t === "hardwareinput") {
+    const isBinary = /alarm|alrm|status|sts|fail|proof|smk|smoke|frz|freezestat|mode|occ/.test(s);
+    return isBinary ? `BI${index}` : `AI${index}`;
+  }
+
+  if (t === "hardwareoutput") {
+    const isBinary = /cmd|command|enable|enbl|start|stop|warmup|cooldown|shutdown/.test(s);
+    return isBinary ? `BO${index}` : `AO${index}`;
+  }
+
+  if (t === "pidloop") return `AV${index}`;
+  return `AV${index}`;
+}
+
 function render(rows) {
   tbody.innerHTML = "";
   const counts = { Input: 0, Output: 0, Setpoint: 0 };
@@ -172,6 +194,7 @@ function render(rows) {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${r.index}</td>
+      <td>${r.code}</td>
       <td>${r.name}</td>
       <td>${r.description}</td>
       <td>${r.type}</td>
@@ -190,12 +213,12 @@ function render(rows) {
 }
 
 function toCSV(rows) {
-  const header = ["Index", "Name", "Description", "PointType", "Category"];
+  const header = ["Index", "Code", "Name", "Description", "PointType", "Category"];
   const esc = (v) => {
     const s = String(v ?? "");
     return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
-  const lines = rows.map(r => [r.index, r.name, r.description, r.type, r.category].map(esc).join(","));
+  const lines = rows.map(r => [r.index, r.code, r.name, r.description, r.type, r.category].map(esc).join(","));
   return [header.join(","), ...lines].join("\n");
 }
 
@@ -224,7 +247,11 @@ async function extractPoints(file) {
   const mode = modeEl.value;
   const categoryOrder = { Input: 1, Output: 2, Setpoint: 3 };
   return points
-    .map(p => ({ ...p, category: classifyPoint(p.name, p.description, p.type, mode) }))
+    .map(p => ({
+      ...p,
+      category: classifyPoint(p.name, p.description, p.type, mode),
+      code: buildShortCode(p.name, p.description, p.type, p.index)
+    }))
     .sort((a, b) => {
       const c = (categoryOrder[a.category] || 99) - (categoryOrder[b.category] || 99);
       if (c !== 0) return c;
